@@ -1,11 +1,11 @@
 <?php
 
-/
+/**
  * @defgroup index Index
  * Bootstrap and initialization code.
  */
 
-/
+/**
  * @file includes/bootstrap.php
  *
  * Copyright (c) 2014-2021 Simon Fraser University
