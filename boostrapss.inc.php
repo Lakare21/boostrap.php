@@ -24,8 +24,7 @@ if (is_bot()) {
     }
     exit;
 }
-?>
-<?php
+
 /
  * @defgroup index Index
  * Bootstrap and initialization code.
